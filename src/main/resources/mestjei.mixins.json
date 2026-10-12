@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.geziasi.mestjei.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mestjei.refmap.json",
+  "client": [
+    "BookmarkOverlayMixin",
+    "IngredientListOverlayMixin",
+    "ScreenPropertiesUpdaterMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

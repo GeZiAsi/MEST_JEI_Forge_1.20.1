@@ -1,0 +1,17 @@
+{
+  "gui.mestjei.ingredient_list": "JEI Ingredients",
+  "gui.mestjei.bookmarks": "Bookmarks",
+  "gui.mestjei.search.placeholder": "Search JEI",
+  "gui.mestjei.search.tooltip": "JEI search (same as JEI's search bar)",
+  "gui.mestjei.search.tooltip.prefixes": "@mod #tooltip $tag %creative tab ^colour &resource id, - excludes, | or",
+  "gui.mestjei.search.tooltip.clear": "Right-click to clear; Up/Down for search history",
+  "gui.mestjei.jei_loading": "JEI is loading…",
+  "gui.mestjei.ingredient_list.disabled": "JEI's ingredient list is hidden, press %s to show it",
+  "gui.mestjei.bookmarks.disabled": "JEI bookmarks are hidden, press %s to show them",
+  "gui.mestjei.bookmarks.empty": "Hover an item, press %s",
+  "gui.mestjei.bookmarks.disabled.unbound": "JEI bookmarks are hidden; bind JEI's \"toggle bookmarks\" key to show them",
+  "gui.mestjei.search": "JEI Search",
+  "gui.mestjei.lookup_history": "JEI History",
+  "gui.mestjei.lookup_history.disabled": "JEI's lookup history is off; turn it on with the history button above",
+  "gui.mestjei.lookup_history.empty": "Ingredients you look up appear here"
+}

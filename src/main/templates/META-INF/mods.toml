@@ -1,0 +1,54 @@
+# Mod metadata. Dollar-brace placeholders are expanded from gradle.properties by the
+# generateModMetadata task (see build.gradle).
+
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/GeZiAsi/MEST_JEI_Forge_1.20.1/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="ME拼接终端 · JEI 拼接窗口"
+authors="GeZiAsi（格兹亚西）"
+credits="代码由 Claude 辅助编写。ME 拼接终端原作者 lhy512103；JEI by mezz。"
+displayURL="https://github.com/GeZiAsi/MEST_JEI_Forge_1.20.1"
+# Client-only: nothing to install on a server, and joining a server without it is fine.
+displayTest="IGNORE_ALL_VERSION"
+description='''
+ME 拼接终端的纯客户端附属：把 JEI 的搜索、物品列表、收藏和查询历史变成终端里可拖拽、可拼接的窗口。
+打开拼接终端时自动隐藏 JEI 原来的列表，换成与终端风格一致的面板；物品图标、提示、点击、按键、作弊模式都由 JEI 自己处理，设置与 JEI 共用。其他界面里的 JEI 保持原样。
+许可证：CC BY-NC-SA 4.0（可修改、再分发，不可商用）。
+
+A client-only add-on for the ME Spliced Terminal: JEI's search bar, ingredient list, bookmarks and
+lookup history become movable, spliceable terminal windows. JEI's own lists are hidden while the
+terminal is open; everything else keeps JEI's normal UI. License: CC BY-NC-SA 4.0.
+'''
+
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="mesplicedterminal"
+    mandatory=true
+    versionRange="${mest_version_range}"
+    ordering="AFTER"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    mandatory=true
+    versionRange="${jei_version_range}"
+    ordering="AFTER"
+    side="CLIENT"

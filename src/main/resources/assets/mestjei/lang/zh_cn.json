@@ -1,0 +1,17 @@
+{
+  "gui.mestjei.ingredient_list": "JEI 物品",
+  "gui.mestjei.bookmarks": "JEI 收藏",
+  "gui.mestjei.search.placeholder": "搜索 JEI",
+  "gui.mestjei.search.tooltip": "JEI 搜索（与 JEI 搜索栏相同）",
+  "gui.mestjei.search.tooltip.prefixes": "@模组 #提示 $标签 %创造物品栏 ^颜色 &资源ID，-排除，| 或",
+  "gui.mestjei.search.tooltip.clear": "右键清空；↑/↓ 浏览搜索历史",
+  "gui.mestjei.jei_loading": "JEI 正在加载……",
+  "gui.mestjei.ingredient_list.disabled": "JEI 物品列表已隐藏，按 %s 显示",
+  "gui.mestjei.bookmarks.disabled": "JEI 收藏已隐藏，按 %s 显示",
+  "gui.mestjei.bookmarks.empty": "悬停物品按 %s 收藏",
+  "gui.mestjei.bookmarks.disabled.unbound": "JEI 收藏已隐藏，可在 JEI 快捷键设置中绑定“显示/隐藏收藏”",
+  "gui.mestjei.search": "JEI 搜索",
+  "gui.mestjei.lookup_history": "JEI 历史",
+  "gui.mestjei.lookup_history.disabled": "JEI 查询历史已关闭，点击右上角的历史按钮开启",
+  "gui.mestjei.lookup_history.empty": "查看过配方的物品会显示在这里"
+}

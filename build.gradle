@@ -1,0 +1,229 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.141'
+    id 'idea'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+// CC BY-NC-SA 4.0 asks for the license with every copy: the jar carries it and the README.
+tasks.named('jar') {
+    from('LICENSE') {
+        into 'META-INF'
+        rename { 'LICENSE-mestjei.txt' }
+    }
+    from('README.md') {
+        into 'META-INF'
+        rename { 'README-mestjei.md' }
+    }
+}
+
+// Launchers such as PCL only show the file name for mods not listed on Modrinth/CurseForge.
+tasks.matching { it.name == 'reobfJar' }.configureEach {
+    archiveFileName = "ME拼接终端附属-JEI拼接窗口-${mod_version}-GeZiAsi.jar"
+}
+
+// Development-only automation (src/devtest): drives a test world and screenshots the panels.
+// It is never part of the published jar; only the runClientDevtest run enables it.
+sourceSets {
+    devtest {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
+// Minecraft 1.20.1 ships Java 17 to end users.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "Jared's Maven"
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+    maven {
+        // Hosts AE2 ("appeng") and other modding artifacts.
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        name = "Shedaniel Maven"
+        url = "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel.cloth"
+        }
+    }
+    maven {
+        name = "Architectury Maven"
+        url = "https://maven.architectury.dev/"
+        content {
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        name = "Curios Maven"
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth Maven"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+    exclusiveContent {
+        // The ME Spliced Terminal release jar in libs/; flatDir resolves a version-less module
+        // straight to <name>.jar and the mod* configurations remap it like any other mod.
+        forRepository {
+            flatDir {
+                name = "Local mods"
+                dirs file('libs')
+            }
+        }
+        filter {
+            includeGroup "local.mods"
+        }
+    }
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run/client')
+        }
+        clientDevtest {
+            client()
+            sourceSet = sourceSets.devtest
+            gameDirectory = project.file('run/devtest')
+            systemProperty 'mestjei.devtest', 'true'
+            systemProperty 'mestjei.devtest.quit', project.findProperty('devtestQuit') ?: 'true'
+            programArguments.addAll '--width', (project.findProperty('devtestWidth') ?: '1600').toString(),
+                    '--height', (project.findProperty('devtestHeight') ?: '900').toString()
+            if (project.findProperty('devtestGuiScale')) {
+                systemProperty 'mestjei.devtest.guiScale', project.findProperty('devtestGuiScale').toString()
+            }
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'mixin.env.remapRefMap', 'true'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+        mestjeidevtest {
+            sourceSet(sourceSets.devtest)
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "mestjei.refmap.json"
+    config "mestjei.mixins.json"
+}
+
+dependencies {
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // ME Spliced Terminal: the module API and dock this add-on plugs into.
+    modCompileOnly(group: 'local.mods', name: mest_jar)
+    modRuntimeOnly(group: 'local.mods', name: mest_jar)
+
+    // JEI: the full jar, since the panels reuse JEI's own grid, filter and bookmark classes.
+    modCompileOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_compile_version}@jar"
+    // @jar: the Gradle metadata's runtime variant is the unshaded jar, which lacks JEI's bundled
+    // search library. -PdevtestJei=<version> runs another JEI, e.g. 15.20.x as some GTL packs ship.
+    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-forge:${project.findProperty('devtestJei') ?: jei_version}@jar"
+
+    // AE2 + AE2WTLib: the terminal screen and panel base classes extend them.
+    modCompileOnly "appeng:appliedenergistics2-forge:${ae2_version}"
+    modCompileOnly "maven.modrinth:applied-energistics-2-wireless-terminals:${ae2wtlib_version}"
+    modCompileOnly "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
+
+    // Development runtime: the AE2 stack the terminal needs.
+    modRuntimeOnly "appeng:appliedenergistics2-forge:${ae2_version}"
+    modRuntimeOnly "maven.modrinth:guideme:${guideme_version}"
+    modRuntimeOnly "maven.modrinth:applied-energistics-2-wireless-terminals:${ae2wtlib_version}"
+    modRuntimeOnly "maven.modrinth:extended-ae:${extendedae_version}"
+    modRuntimeOnly "maven.modrinth:glodium:${glodium_version}"
+    modRuntimeOnly "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
+    modRuntimeOnly "dev.architectury:architectury-forge:${architectury_version}"
+    modRuntimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
+}
+
+// Expand ${} properties in the mod metadata template.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version_range: minecraft_version_range,
+            forge_version_range    : forge_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mest_version_range     : mest_version_range,
+            jei_version_range      : jei_version_range,
+    ]
+    inputs.properties replaceProperties
+    filteringCharset = 'UTF-8'
+    expand replaceProperties
+    from "src/main/templates"
+    into layout.buildDirectory.dir("generated/sources/modMetadata")
+}
+sourceSets.main.resources.srcDir generateModMetadata
+legacyForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.fork = true
+    options.forkOptions.jvmArgs += ['-Duser.language=en', '-Duser.country=US']
+}
+
+// Forge 1.20.1 discovers mixin configs through this manifest attribute only.
+tasks.named('jar', Jar).configure {
+    manifest.attributes([
+            'MixinConfigs': 'mestjei.mixins.json',
+    ])
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

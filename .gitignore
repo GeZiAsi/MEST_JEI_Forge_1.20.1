@@ -1,0 +1,52 @@
+### Gradle ###
+.gradle
+build/
+build-alt/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/**/out/
+
+.run/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.eclipse/
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/**/bin/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Video ###
+promo/
+
+### Minecraft Modding ###
+logs/
+run/
+!**/src/**/run/
+**/src/generated/**/.cache/
+repo/
+!**/src/**/repo/
+.agents/
+.uploads/
+.reasonix/
+.workbuddy/
+reasonix.toml
+.eclipse/
+.vscode/
